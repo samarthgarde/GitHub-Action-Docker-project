@@ -1,1 +1,24 @@
+name: Build and Push Docker Image
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish_image:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to DockerHub
+      run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+    - name: Build Docker Image
+      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/github-action-project:latest .
+
+    - name: Push Docker Image
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/github-action-project:latest
